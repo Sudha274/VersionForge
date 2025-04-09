@@ -1,0 +1,31 @@
+name: Test Score Calculator
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test_average:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get the code
+      uses: actions/checkout@v4
+
+    - name: Use Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Create sample feedback data (if it doesn't exist)
+      run: |
+        if [ ! -f "feedback_data.txt" ]; then
+          echo "Alice,5,Good" > feedback_data.txt
+          echo "Bob,3,Okay" >> feedback_data.txt
+          echo "Charlie,4,Great" >> feedback_data.txt
+          echo "Sample feedback data created."
+        fi
+
+    - name: Run score calculator
+      run: python compute_average.py
