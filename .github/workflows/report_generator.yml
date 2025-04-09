@@ -1,0 +1,39 @@
+name: Test Report Generator
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test_report:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get the code
+      uses: actions/checkout@v4
+
+    - name: Use Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Create sample feedback data (if it doesn't exist)
+      run: |
+        if [ ! -f "feedback_data.txt" ]; then
+          echo "Student X,4,Informative" > feedback_data.txt
+          echo "Student Y,2,Too fast" >> feedback_data.txt
+          echo "Sample feedback data created."
+        fi
+
+    - name: Run report generator
+      run: python report_generator.py
+
+    - name: Check if the report file was created (very basic)
+      run: |
+        if [ -f "feedback_report.txt" ]; then
+          echo "Report file 'feedback_report.txt' was created!"
+        else
+          echo "Error: Report file 'feedback_report.txt' was NOT created!"
+          exit 1
+        fi
