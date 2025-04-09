@@ -1,0 +1,39 @@
+name: Test Feedback Collection (Simulated)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  simulate_feedback:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get the code
+      uses: actions/checkout@v4
+
+    - name: Use Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Run feedback collection (simulated)
+      run: |
+        echo "Simulating feedback entries..."
+        echo "Alice,5,Good" > feedback_data.txt
+        echo "Bob,3,Okay" >> feedback_data.txt
+        echo "Charlie,4,Great" >> feedback_data.txt
+        echo "David,1,Poor" >> feedback_data.txt
+        echo "Eve,5,Excellent" >> feedback_data.txt
+        echo "Frank,2,Needs improvement" >> feedback_data.txt
+        echo "Simulated feedback data written to feedback_data.txt"
+
+    - name: Check if feedback data file exists
+      run: |
+        if [ -f "feedback_data.txt" ]; then
+          echo "feedback_data.txt was created!"
+        else
+          echo "Error: feedback_data.txt was NOT created!"
+          exit 1
+        fi
