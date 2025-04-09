@@ -1,0 +1,40 @@
+name: Basic Feedback Summary Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test_summary:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get the code
+      uses: actions/checkout@v4
+
+    - name: Use Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Make some fake feedback
+      run: |
+        echo "Student A,5,Good" > feedback_data.txt
+        echo "Student B,3,Okay" >> feedback_data.txt
+        echo "Student C,5,Great" >> feedback_data.txt
+
+    - name: Run the summary code
+      run: python feedback_summary.py
+
+    - name: Check the summary (very simple check)
+      run: |
+        output=$(python -c "import feedback_summary; print(feedback_summary.summarize_feedback_basic())")
+        echo "Summary output was: $output"
+        # A very basic check: just see if the output isn't empty
+        if [[ -n "$output" ]]; then
+          echo "Summary ran and produced some output!"
+        else
+          echo "Something went wrong with the summary!"
+          exit 1
+        fi
